@@ -110,7 +110,76 @@ public class EmpDAO {
 		}
 		return list;
 	}
+	
 	// 9-2. 상세보기 => 셀렉션 VO
+	public EmpVO empDetailData(int empno) {
+		EmpVO vo=new EmpVO();
+		try {
+			getConnection();
+			String sql="SELECT empno,ename,job,mgr,hiredate,sal,comm,deptno "
+					+ "FROM emp "
+					+ "WHERE empno="+empno;
+			ps=conn.prepareStatement(sql);
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			vo.setEmpno(rs.getInt(1));
+			vo.setEname(rs.getString(2));
+			vo.setJob(rs.getString(3));
+			vo.setMgr(rs.getInt(4));
+			vo.setHiredate(rs.getDate(5));
+			vo.setSal(rs.getInt(6));
+			vo.setComm(rs.getInt(7));
+			vo.setDeptno(rs.getInt(8));
+			rs.close();
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			disConnection();
+		}
+		return vo;
+	}
 	
 	// 9-3. 검색 => LIKE List
+	public List<EmpVO> empFindData(String ename) {
+		List<EmpVO> list=new ArrayList<EmpVO>();
+		try {
+			// 1. 연결
+			getConnection();
+			
+			// 2. 오라클에 어떤 문장을 전송할지
+			// 오라클은 데이터가 대소문자 구분 => EMP에 모든 데이터가 대문자
+			String sql="SELECT empno,ename,job,TO_CHAR(hiredate, 'YYYY-MM-DD'),sal "
+					+ "FROM emp "
+					+ "WHERE ename LIKE '%"+ename.toUpperCase()+"%' "
+					+ "ORDER BY sal DESC";
+			
+			// 3. 오라클로 전송
+			ps=conn.prepareStatement(sql);
+			
+			// 4. 실행후에 결과값을 메모리에 저장 요청
+			ResultSet rs=ps.executeQuery();
+			while(rs.next())/* 첫번째줄부터 데이터 읽기 */ {
+				EmpVO vo=new EmpVO();
+				vo.setEmpno(rs.getInt(1));
+				vo.setEname(rs.getString(2));
+				vo.setJob(rs.getString(3));
+				vo.setDbday(rs.getString(4));
+				vo.setSal(rs.getInt(5));
+				list.add(vo);
+			}
+			
+			// 5. 메모리 닫기
+			rs.close();
+		}
+		catch(Exception ex) {
+			// 에러 확인
+			ex.printStackTrace();
+		}
+		finally {
+			disConnection(); // 오라클 닫기
+		}
+		return list;
+	}
 }
