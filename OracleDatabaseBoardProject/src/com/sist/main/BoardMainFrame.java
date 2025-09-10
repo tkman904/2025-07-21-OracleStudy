@@ -4,18 +4,26 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-
+// 프로젝트 => ControllerPanel 
 public class BoardMainFrame extends JFrame {
 	CardLayout card=new CardLayout();
 	BoardList bList;
 	BoardInsert bInsert;
+	BoardDetail bDetail;
+	BoardUpdate bUpdate;
 	
 	public BoardMainFrame() {
 		bList=new BoardList(this);
 		bInsert=new BoardInsert(this);
+		bDetail=new BoardDetail(this);
+		bUpdate=new BoardUpdate(this);
+		
 		setLayout(card);
 		add("list", bList);
-		add("insert",bInsert);
+		add("detail", bDetail);
+		add("insert", bInsert);
+		add("update", bUpdate);
+		
 		setSize(640, 570);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
