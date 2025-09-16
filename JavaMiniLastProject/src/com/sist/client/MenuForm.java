@@ -13,6 +13,12 @@ public class MenuForm extends JPanel{
 	
 	public MenuForm() {
 		setLayout(new GridLayout(1, 7, 5, 5));
-		add(b1);add(b2);add(b3);add(b4);add(b5);add(b6);add(b7);
+		add(b1);
+		add(b3);
+		add(b4);
+		add(b5);
+		add(b6);
+		add(b7);
+		add(b2);
 	}
 }
