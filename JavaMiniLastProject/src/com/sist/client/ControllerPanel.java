@@ -8,12 +8,14 @@ public class ControllerPanel extends JPanel{
 	BoardList bf=new BoardList();
 	FoodFind ff;
 	FoodDetail fd;
+	GenieMusic gm;
 	CardLayout card=new CardLayout();
 	
 	public ControllerPanel() {
 		hf=new HomeForm(this);
 		ff=new FoodFind(this);
 		fd=new FoodDetail(this);
+		gm=new GenieMusic(this);
 		
 		setLayout(card);
 		add("HF", hf);
@@ -21,5 +23,6 @@ public class ControllerPanel extends JPanel{
 		add("BF", bf);
 		add("FF", ff);
 		add("FD", fd);
+		add("GM", gm);
 	}
 }
