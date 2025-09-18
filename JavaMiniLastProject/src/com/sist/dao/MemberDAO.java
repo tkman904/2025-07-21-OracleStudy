@@ -180,6 +180,7 @@ public class MemberDAO {
 			
 			// 결과값 받기
 			ResultSet rs=ps.executeQuery();
+			rs.next();
 			count=rs.getInt(1);
 			rs.close();
 		}
@@ -221,7 +222,8 @@ public class MemberDAO {
 	}
 	
 	// 5. 회원가입 => 회원 수정 => 회원 정보 출력 => 회원 탈퇴
-	public void memberJoin(MemberVO vo) {
+	public int memberJoin(MemberVO vo) {
+		int res=0;
 		try {
 			getConnection();
 			String sql="INSERT INTO project_member "
@@ -237,7 +239,7 @@ public class MemberDAO {
 			ps.setString(7, vo.getAddr2());
 			ps.setString(8, vo.getPhone());
 			ps.setString(9, vo.getContent());
-			ps.executeUpdate();
+			res=ps.executeUpdate();
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
@@ -245,7 +247,7 @@ public class MemberDAO {
 		finally {
 			disConnection();
 		}
-		
+		return res;
 	}
 	
 	// 옵션 6. ID찾기 / 비밀번호 찾기

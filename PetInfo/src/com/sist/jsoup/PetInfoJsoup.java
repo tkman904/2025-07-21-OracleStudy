@@ -3,31 +3,58 @@ package com.sist.jsoup;
 import java.util.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import com.sist.dao.*;
-import com.sist.vo.*;
+import com.sist.dao.PetDAO;
+import com.sist.vo.PetInfoVO;
 
 public class PetInfoJsoup {
 	public void petInfoDataCollection() {
-		PetInfoDAO dao=PetInfoDAO.newInstance();
+		PetDAO dao=PetDAO.newInstance();
 		try {
-			String url="";
 			for(int p=1;p<=30;p++) {
-				url="https://mypetlife.co.kr/popular-posts/page/"+p+"/?filter=dog";
-					
+				String url="https://mypetlife.co.kr/popular-posts/page/"+p+"/?filter=dog";
 				Document doc=Jsoup.connect(url).get();
-				Elements title=doc.select("li.bl-post div.post-title");
-				Elements poster=doc.select("li.bl-post img");
-			
-				for(int j=0;j<title.size();j++) {
+				
+				Elements posts=doc.select("li.bl-post");
+				for(Element post : posts) {
 					try {
-						System.out.println(title.get(j).text()
-								+" "+poster.get(j).attr("src"));
-							
 						PetInfoVO vo=new PetInfoVO();
-						vo.setTitle(title.get(j).text());
-						vo.setPoster(poster.get(j).attr("src"));
-							
+						vo.setTitle(post.selectFirst("div.post-title").text());
+						vo.setPoster(post.selectFirst("img").attr("src"));
+						
+						Elements cates=post.select("div#product-post-category a");
+						if(!cates.isEmpty()) {
+							List<String> catList=new ArrayList<String>();
+							for(Element c : cates) {
+								catList.add(c.text());
+							}
+							vo.setCategory(String.join(", ", catList));
+						} else {
+							vo.setCategory("");
+						}
+						
+						Elements tagEls=post.select("div#product-post-tags a");
+						List<String> tagList=new ArrayList<String>();
+						for(Element t : tagEls) {
+							String txt=t.text().replaceAll("^#+", "")
+											.replaceAll(",\\s*$", "")
+											.trim();
+							if(!txt.isEmpty()) {
+								tagList.add(txt);
+							}
+						}
+						if(!tagList.isEmpty()) {
+							vo.setTags(String.join(", ", tagList));
+						} else {
+							vo.setTags("");
+						}
+						
+						System.out.println(vo.getTitle()
+								+" "+vo.getPoster()
+								+" "+vo.getCategory()
+								+" "+vo.getTags());
+						
 						dao.petinfoInsert(vo);
 					} catch(Exception ex) {}
 				}
