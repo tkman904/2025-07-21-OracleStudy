@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sist.vo.FoodVO;
+import com.sist.vo.JjimVO;
 
 public class FoodDAO {
 	private Connection conn;
@@ -262,4 +263,95 @@ public class FoodDAO {
 		return count;
 	}
 	
+	// 4. 찜하기
+	// 4-1. 저장
+	public int jjimInsert(JjimVO vo) {
+		int res=0;
+		try {
+			getConnection();
+			String sql="INSERT INTO jjim VALUES(jjim_jno_seq.nextval, ?, ?)";
+			ps=conn.prepareStatement(sql); // 먼저 SQL문장 전송
+			// 나중에 값을 채워서 실행
+			ps.setInt(1, vo.getFno());
+			ps.setString(2, vo.getId());
+			// 실행
+			res=ps.executeUpdate();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			disConnection();
+		}
+		return res;
+	}
+	
+	// 4-2. 읽기
+	public List<JjimVO> jjimListData(String id) {
+		List<JjimVO> list=new ArrayList<JjimVO>();
+		try {
+			getConnection();
+			String sql="SELECT jno, fno, id, getName(fno), getPoster(fno) "
+					+ "FROM jjim "
+					+ "WHERE id=?";
+			ps=conn.prepareStatement(sql);
+			ps.setString(1, id);
+			ResultSet rs=ps.executeQuery();
+			while(rs.next()) {
+				JjimVO vo=new JjimVO();
+				vo.setJno(rs.getInt(1));
+				vo.setFno(rs.getInt(2));
+				vo.setId(rs.getString(3));
+				vo.setName(rs.getString(4));
+				vo.setPoster(rs.getString(5));
+				list.add(vo);
+			}
+			rs.close();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			disConnection();
+		}
+		return list;
+	}
+	
+	// 4-3. 취소
+	public void jjimCancel(int jno) {
+		try {
+			getConnection();
+			String sql="DELETE FROM jjim WHERE jno=?";
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1, jno);
+			ps.executeUpdate();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			disConnection();
+		}
+	}
+	
+	// 4-4 찜 여부 확인
+	public int jjimCheck(int fno, String id) {
+		int count=0;
+		try {
+			getConnection();
+			String sql="SELECT COUNT(*) "
+					+ "FROM jjim "
+					+ "WHERE fno=? AND id=?";
+			ps=conn.prepareStatement(sql);
+			ps.setInt(1, fno);
+			ps.setString(2, id);
+			ResultSet rs=ps.executeQuery();
+			rs.next();
+			count=rs.getInt(1);
+			rs.close();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			disConnection();
+		}
+		return count;
+	}
 }

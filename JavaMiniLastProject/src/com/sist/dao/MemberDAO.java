@@ -7,7 +7,7 @@ import com.sist.vo.*;
 public class MemberDAO {
 	private Connection conn;
 	private PreparedStatement ps;
-	private final String URL="jdbc:oracle:thin:@211.238.142.22:1521:XE";
+	private final String URL="jdbc:oracle:thin:@localhost:1521:XE";
 	private static MemberDAO dao;
 	
 	// 드라이버 등록
@@ -27,7 +27,7 @@ public class MemberDAO {
 	// 연결
 	public void getConnection() {
 		try {
-			conn=DriverManager.getConnection(URL, "hr_2", "happy");
+			conn=DriverManager.getConnection(URL, "hr", "happy");
 		}
 		catch(Exception ex) {}
 	}
@@ -227,7 +227,7 @@ public class MemberDAO {
 		try {
 			getConnection();
 			String sql="INSERT INTO project_member "
-					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE)";
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, 'n')";
 			ps=conn.prepareStatement(sql);
 			// ?에 값을 채운다
 			ps.setString(1, vo.getId());
@@ -238,7 +238,7 @@ public class MemberDAO {
 			ps.setString(6, vo.getAddr1());
 			ps.setString(7, vo.getAddr2());
 			ps.setString(8, vo.getPhone());
-			ps.setString(9, vo.getContent());
+			//ps.setString(9, vo.getContent());
 			res=ps.executeUpdate();
 		}
 		catch(Exception ex) {
