@@ -34,14 +34,14 @@ implements ActionListener,MouseListener
     	 
     	 setLayout(null);
     	 
-    	 tf.setBounds(10, 15, 250, 30);
-    	 b.setBounds(265, 15, 100, 30);
+    	 tf.setBounds(120, 15, 250, 30);
+    	 b.setBounds(365, 15, 100, 30);
     	 add(tf);
     	 add(b);
     	 pan.setPreferredSize(new Dimension(830,1200));
     	 pane=new JScrollPane(pan);
     	 pane.setPreferredSize(new Dimension(800,600));
-    	 pane.setBounds(10,55, 720, 650);
+    	 pane.setBounds(120, 55, 995, 650);
     	 add(pane);
     	 
     	 tf.addActionListener(this);
